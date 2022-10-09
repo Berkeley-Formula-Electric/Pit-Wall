@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+  body {
+    margin: 0;
+    background: #000;
+    overflow: hidden;
+  }
+  
+  
+  </style>
+  <script>
+    
+  </script>
+</head>
+<body>
+<canvas id="canvas"></canvas>
+<img id="image" src="car_cam_example.png" style="display: none">
+<script>
+  new FontFace("Titillium-Web-Regular", "url(static/fonts/TitilliumWeb-Regular.ttf)").load().then((font) => {
+    document.fonts.add(font);
+  });
+  new FontFace("Titillium-Web-Light", "url(static/fonts/TitilliumWeb-Light.ttf)").load().then((font) => {
+    document.fonts.add(font);
+    console.log(font)
+  });
+  
+
+
+  var cvs, ctx;
+  
+  cvs = canvas;
+  ctx = cvs.getContext("2d");
+  
+  var scale = 0.75;
+  cvs.width = 1920;
+  cvs.height = 1080;
+  
+  ctx.scale(scale, scale);
+  
+  
+  var update = function(t) {  
+    ctx.fillStyle = "rgb(43, 43, 51)";
+    ctx.fillRect(0, 0, cvs.width, cvs.height);
+    
+    ctx.fillStyle = "#FFFFFF";
+    ctx.font = "40px Titillium-Web-Light";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "alphabetic";
+    ctx.fillText("Driver Cam Signal Lost", cvs.width / 2, cvs.height / 2);
+    
+    ctx.drawImage(image, 0, 0, cvs.width, cvs.height);
+    
+    var grd = ctx.createLinearGradient(cvs.width / 2 - 200, 0, cvs.width / 2 + 200, 0);
+    grd.addColorStop(0, "transparent");
+    grd.addColorStop(.25, "rgba(0, 0, 0, 0.4)");
+    grd.addColorStop(.75, "rgba(0, 0, 0, 0.4)");
+    grd.addColorStop(1, "transparent");
+
+    ctx.fillStyle = grd;
+    ctx.fillRect(cvs.width / 2 - 200, 145, 400, 70);
+    
+    ctx.fillStyle = "rgba(255, 255, 255, 1)";
+    ctx.font = "60px Titillium-Web-Light";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "alphabetic";
+    ctx.fillText("00:00:00", cvs.width / 2, 200);
+    
+    
+    
+    var accel = {x: 0.1, y: 0.3};
+    
+    var pos = {x: 200, y: cvs.height - 200};
+    var size = 120;
+    
+    ctx.strokeStyle = "rgba(128, 128, 128, 0.5)";
+    ctx.fillStyle = "rgba(128, 128, 128, 0.5)";
+    ctx.lineWidth = 4;
+    ctx.beginPath();
+    ctx.arc(pos.x, pos.y, size, 0, 2 * Math.PI);
+    ctx.stroke();
+    
+    ctx.beginPath();
+    ctx.arc(pos.x, pos.y, 0.5 * size, 0, 2 * Math.PI);
+    ctx.stroke();
+    
+    ctx.beginPath();
+    ctx.arc(pos.x, pos.y, 0.5 * ctx.lineWidth, 0, 2 * Math.PI);
+    ctx.fill();
+    
+    ctx.strokeStyle = "rgba(128, 128, 128, 0.3)";
+    ctx.fillStyle = "rgba(128, 128, 128, 0.3)";
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.arc(pos.x, pos.y, 0.25 * size, 0, 2 * Math.PI);
+    ctx.stroke();
+    
+    ctx.beginPath();
+    ctx.arc(pos.x, pos.y, 0.75 * size, 0, 2 * Math.PI);
+    ctx.stroke();
+    
+    ctx.strokeStyle = "rgba(255, 255, 255, 0.6)";
+    ctx.fillStyle = "rgba(255, 255, 255, 0.6)";
+    ctx.lineWidth = 4;
+    ctx.beginPath();
+    ctx.moveTo(pos.x, pos.y);
+    ctx.lineTo(pos.x + accel.x * size, pos.y + accel.y * size);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.arc(pos.x + accel.x * size, pos.y + accel.y * size, ctx.lineWidth, 0, 2 * Math.PI);
+    ctx.fill();
+    
+    
+    
+    
+    var throttle = Math.random() - 0.5;
+    
+    var pos = {x: cvs.width - 180, y: cvs.height - 180};
+    var size = 100;
+    
+    ctx.strokeStyle = "rgba(128, 128, 128, 0.5)";
+    ctx.lineWidth = 8;
+    ctx.beginPath();
+    ctx.arc(pos.x, pos.y, size, 0, 2 * Math.PI);
+    ctx.stroke();
+    
+    ctx.lineWidth = 8;
+    ctx.beginPath();
+    if (throttle > 0) {
+      //ctx.strokeStyle = "rgba(160, 160, 255, 0.8)";
+      ctx.strokeStyle = "rgba(255, 255, 255, 0.8)";
+      ctx.arc(pos.x, pos.y, size, 0.5 * Math.PI, Math.PI * throttle + 0.5 * Math.PI);
+    }
+    else {
+      ctx.strokeStyle = "rgba(160, 255, 160, 0.8)";
+      ctx.arc(pos.x, pos.y, size, 0.5 * Math.PI, Math.PI * throttle + 0.5 * Math.PI, true);
+    }
+    ctx.stroke();
+    
+    ctx.fillStyle = "#FFFFFF";
+    ctx.font = "32px Titillium-Web-Light";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText(throttle.toFixed(2), pos.x, pos.y + 4);
+    
+    
+    requestAnimationFrame(update);
+  }
+  
+  update(0);
+  
+</script>
+</body>
+</html>
